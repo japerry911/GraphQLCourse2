@@ -5,6 +5,7 @@ const { makeExecutableSchema } = require("graphql-tools");
 const { mergeTypeDefs, mergeResolvers } = require("@graphql-tools/merge");
 const { loadFilesSync } = require("@graphql-tools/load-files");
 const path = require("path");
+const mongoose = require("mongoose");
 require("dotenv").config();
 
 const typeDefs = mergeTypeDefs(
@@ -15,6 +16,23 @@ const resolvers = mergeResolvers(
 );
 
 const app = express();
+
+const db = async () => {
+  try {
+    await mongoose.connect(process.env.DATABASE_CLOUD, {
+      useNewUrlParsed: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+    });
+
+    console.log("DB Connected");
+  } catch (error) {
+    console.log(`Mongoose connection error - ${error}`);
+  }
+};
+
+db();
 
 const apolloServer = new ApolloServer({
   typeDefs,
