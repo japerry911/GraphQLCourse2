@@ -20,7 +20,7 @@ const app = express();
 const db = async () => {
   try {
     await mongoose.connect(process.env.DATABASE_CLOUD, {
-      useNewUrlParsed: true,
+      useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
       useFindAndModify: false,
