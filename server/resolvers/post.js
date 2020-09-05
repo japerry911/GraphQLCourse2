@@ -4,9 +4,13 @@ const { posts } = require("../temp");
 const totalPosts = () => posts.length;
 const allPosts = () => posts;
 const newPost = (parentValue, args) => {
+  //const { title, description } = args.input;
+
   const post = {
     id: posts.length++,
-    ...args,
+    ...args.input,
+    //title,
+    //description,
   };
 
   posts.push(post);
