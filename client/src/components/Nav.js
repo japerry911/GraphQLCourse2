@@ -30,11 +30,6 @@ const Nav = () => (
             Register
           </Link>
         </li>
-        <li className="nav-item">
-          <Link className="nav-link disabled" to="#">
-            Disabled
-          </Link>
-        </li>
       </ul>
       <form className="form-inline my-2 my-lg-0">
         <input
