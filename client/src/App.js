@@ -7,6 +7,7 @@ import { Route, Switch } from "react-router-dom";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import { ToastContainer } from "react-toastify";
+import CompleteRegistration from "./pages/auth/CompleteRegistration";
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
@@ -21,6 +22,11 @@ const App = () => {
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
+        <Route
+          exact
+          path="/complete-registration"
+          component={CompleteRegistration}
+        />
       </Switch>
     </ApolloProvider>
   );

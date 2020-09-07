@@ -1,31 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth } from "../../firebase";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 
-const Register = () => {
+const CompleteRegistration = () => {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const history = useHistory();
 
-    setLoading(true);
-    const config = {
-      url: process.env.REACT_APP_CONFIRMATION_EMAIL_REDIRECT,
-      handleCodeInApp: true,
-    };
+  useEffect(() => {
+    setEmail(window.localStorage.getItem("emailForRegistration"));
+  }, [history]);
 
-    await auth.sendSignInLinkToEmail(email, config);
-
-    toast.success(
-      `Email is sent to ${email}. Click the link to complete your registration.`
-    );
-
-    window.localStorage.setItem("emailForRegistration", email);
-
-    setEmail("");
-    setLoading(false);
-  };
+  const handleSubmit = (event) => {};
 
   return (
     <div className="container p-5">
@@ -43,6 +32,17 @@ const Register = () => {
             onChange={(e) => setEmail(e.target.value)}
             className="form-control"
             placeholder="Enter Email"
+            disabled
+          />
+        </div>
+        <div className="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="form-control"
+            placeholder="Enter Password"
             disabled={loading}
           />
         </div>
@@ -57,4 +57,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default CompleteRegistration;
