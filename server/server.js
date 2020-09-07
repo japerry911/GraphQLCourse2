@@ -38,6 +38,7 @@ db();
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
+  context: ({ req, res }) => ({ req, res }),
 });
 
 apolloServer.applyMiddleware({ app });
