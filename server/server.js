@@ -6,6 +6,7 @@ const { mergeTypeDefs, mergeResolvers } = require("@graphql-tools/merge");
 const { loadFilesSync } = require("@graphql-tools/load-files");
 const path = require("path");
 const mongoose = require("mongoose");
+const { authCheck } = require("./helpers/auth");
 require("dotenv").config();
 
 const typeDefs = mergeTypeDefs(
@@ -43,7 +44,7 @@ apolloServer.applyMiddleware({ app });
 
 const httpServer = http.createServer(app);
 
-app.get("/rest", (req, res) => {
+app.get("/rest", authCheck, (req, res) => {
   res.json({
     data: "you hit rest endpoint",
   });
