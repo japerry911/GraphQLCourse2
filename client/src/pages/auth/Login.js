@@ -8,7 +8,6 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
-  const [success, setSuccess] = useState(false);
 
   const { dispatch } = useContext(AuthContext);
 
@@ -37,9 +36,26 @@ const Login = () => {
     }
   };
 
+  const googleLogin = async () => {
+    const result = await auth.signInWithPopup(googleAuthProvider);
+
+    const { user } = result;
+    const idTokenResult = await user.getIdTokenResult();
+
+    dispatch({
+      type: "LOGGED_IN_USER",
+      payload: { email: user.email, token: idTokenResult.token },
+    });
+
+    history.push("/");
+  };
+
   return (
     <div className="container p-5">
-      <h4>Login</h4>
+      {loading ? <h4 className="text-danger">Loading...</h4> : <h4>Login</h4>}{" "}
+      <button onClick={googleLogin} className="btn btn-raised btn-danger mt-5">
+        Login with Google
+      </button>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Email Address</label>
