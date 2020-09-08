@@ -21,6 +21,9 @@ const resolvers = mergeResolvers(
 
 const app = express();
 
+app.use(cors());
+app.use(bodyParser.json());
+
 const db = async () => {
   try {
     await mongoose.connect(process.env.DATABASE_CLOUD, {
@@ -63,11 +66,13 @@ cloudinary.config({
 app.post("/uploadimages", authCheckMiddleware, (req, res) => {
   cloudinary.uploader.upload(
     req.body.image,
-    (response) =>
+    (response) => {
+      console.log(response);
       res.send({
-        url: response.url,
+        url: response.secure_url,
         public_id: response.public_id,
-      }),
+      });
+    },
     {
       public_id: `${Date.now()}`, // public name,
       resource_type: "auto", // JPEG, PNG, SVG, etc...

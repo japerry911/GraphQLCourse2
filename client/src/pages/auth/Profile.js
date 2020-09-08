@@ -1,9 +1,12 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useContext } from "react";
 import { toast } from "react-toastify";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { PROFILE } from "../../graphql/queries";
 import { USER_UPDATE } from "../../graphql/mutations";
 import omitDeep from "omit-deep";
+import Resizer from "react-image-file-resizer";
+import axios from "axios";
+import { AuthContext } from "../../context/authContext";
 
 const Profile = () => {
   const [values, setValues] = useState({
@@ -14,6 +17,8 @@ const Profile = () => {
     about: "",
   });
   const [loading, setLoading] = useState(false);
+
+  const { state } = useContext(AuthContext);
 
   const { data } = useQuery(PROFILE);
 
@@ -36,7 +41,73 @@ const Profile = () => {
     },
   });
 
-  const handleImageChange = () => {};
+  const fileResizeAndUpload = (event) => {
+    let fileInput = false;
+
+    if (event.target.files[0]) {
+      fileInput = true;
+    }
+
+    if (fileInput) {
+      Resizer.imageFileResizer(
+        event.target.files[0],
+        300,
+        300,
+        "JPEG",
+        100,
+        0,
+        (uri) => {
+          axios
+            .post(
+              `${process.env.REACT_APP_REST_ENDPOINT}/uploadimages`,
+              { image: uri },
+              {
+                headers: {
+                  authtoken: state.user.token,
+                },
+              }
+            )
+            .then((response) => {
+              setLoading(false);
+              setValues({
+                ...values,
+                images: [...values.images, response.data],
+              });
+            })
+            .catch((error) => {
+              setLoading(false);
+              console.log(error);
+            });
+        },
+        "base64"
+      );
+    }
+  };
+
+  const handleImageRemove = (id) => {
+    setLoading(true);
+    axios
+      .post(
+        `${process.env.REACT_APP_REST_ENDPOINT}/removeimage`,
+        { public_id: id },
+        {
+          headers: {
+            authtoken: state.user.token,
+          },
+        }
+      )
+      .then((response) => {
+        setLoading(false);
+        const filteredImages = values.images.filter(
+          (image) => image.public_id !== id
+        );
+        setValues({ ...values, images: filteredImages });
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -89,18 +160,6 @@ const Profile = () => {
         />
       </div>
       <div className="form-group">
-        <label>Image</label>
-        <input
-          type="file"
-          name="image"
-          value={values.image}
-          onChange={handleImageChange}
-          className="form-control"
-          placeholder="Email"
-          disabled={loading}
-        />
-      </div>
-      <div className="form-group">
         <label>About</label>
         <input
           type="text"
@@ -122,7 +181,42 @@ const Profile = () => {
     </form>
   );
 
-  return <div className="container p-5">{profileUpdateForm()}</div>;
+  return (
+    <div className="container p-5">
+      <div className="row">
+        <div className="col-md-3">
+          <div className="form-group">
+            <label className="btn btn-primary">
+              Upload Image
+              <input
+                hidden
+                type="file"
+                name="image"
+                value={values.image}
+                onChange={fileResizeAndUpload}
+                className="form-control"
+                placeholder="Email"
+                disabled={loading}
+              />
+            </label>
+          </div>
+        </div>
+        <div className="col-md-9">
+          {values.images.map((image) => (
+            <img
+              src={image.url}
+              key={image.public_id}
+              alt={image.public_id}
+              style={{ height: "100px" }}
+              className="float-right"
+              onClick={() => handleImageRemove(image.public_id)}
+            />
+          ))}
+        </div>
+      </div>
+      {profileUpdateForm()}
+    </div>
+  );
 };
 
 export default Profile;
