@@ -1,43 +1,41 @@
-import React, { useState, useMemo, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { toast } from "react-toastify";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import omitDeep from "omit-deep";
 
+const USER_INFO = gql`
+  fragment userInfo on User {
+    _id
+    username
+    name
+    email
+    images {
+      url
+      public_id
+    }
+    about
+    createdAt
+    updatedAt
+  }
+`;
+
 const PROFILE = gql`
   query {
     profile {
-      _id
-      username
-      name
-      email
-      images {
-        url
-        public_id
-      }
-      about
-      createdAt
-      updatedAt
+      ...userInfo
     }
   }
+  ${USER_INFO}
 `;
 
 const USER_UPDATE = gql`
   mutation userUpdate($input: UserUpdateInput!) {
     userUpdate(input: $input) {
-      _id
-      username
-      name
-      email
-      images {
-        url
-        public_id
-      }
-      about
-      createdAt
-      updatedAt
+      ...userInfo
     }
   }
+  ${USER_INFO}
 `;
 
 const Profile = () => {
@@ -52,10 +50,9 @@ const Profile = () => {
 
   const { data } = useQuery(PROFILE);
 
-  useMemo(() => {
+  useEffect(() => {
     if (data) {
       setValues({
-        ...values,
         username: data.profile.username,
         name: data.profile.name,
         email: data.profile.email,
