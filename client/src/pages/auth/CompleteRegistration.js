@@ -3,6 +3,17 @@ import { auth } from "../../firebase";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
+import { useMutation } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
+
+const USER_CREATE = gql`
+  mutation {
+    userCreate {
+      username
+      email
+    }
+  }
+`;
 
 const CompleteRegistration = () => {
   const [email, setEmail] = useState("");
@@ -16,6 +27,8 @@ const CompleteRegistration = () => {
   useEffect(() => {
     setEmail(window.localStorage.getItem("emailForRegistration"));
   }, [history]);
+
+  const [userCreate] = useMutation(USER_CREATE);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -44,6 +57,8 @@ const CompleteRegistration = () => {
           type: "LOGGED_IN_USER",
           payload: { email: user.email, token: idTokenResult.token },
         });
+
+        userCreate();
 
         history.push("/");
       }
