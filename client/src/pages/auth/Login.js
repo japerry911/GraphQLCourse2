@@ -45,7 +45,7 @@ const Login = () => {
 
       userCreate();
 
-      history.push("/");
+      history.push("/profile");
     } catch (error) {
       toast.error(error.message);
       setLoading(false);
@@ -65,7 +65,7 @@ const Login = () => {
 
     userCreate();
 
-    history.push("/");
+    history.push("/profile");
   };
 
   return (
@@ -82,6 +82,9 @@ const Login = () => {
         showPasswordInput
         handleSubmit={handleSubmit}
       />
+      <Link className="text-danger float-right" to="/password/forgot">
+        Forgot Password
+      </Link>
     </div>
   );
 };

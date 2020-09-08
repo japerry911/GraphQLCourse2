@@ -10,9 +10,10 @@ import { ToastContainer } from "react-toastify";
 import CompleteRegistration from "./pages/auth/CompleteRegistration";
 import { AuthContext } from "./context/authContext";
 import PrivateRoute from "./components/PrivateRoute";
-import PasswordReset from "./pages/auth/PasswordReset";
+import PasswordUpdate from "./pages/auth/PasswordUpdate";
 import Post from "./pages/post/Post";
 import Profile from "./pages/auth/Profile";
+import PasswordForgot from "./pages/auth/PasswordForgot";
 
 const App = () => {
   const { state } = useContext(AuthContext);
@@ -43,7 +44,12 @@ const App = () => {
           path="/complete-registration"
           component={CompleteRegistration}
         />
-        <PrivateRoute exact path="/password/update" component={PasswordReset} />
+        <Route exact path="/password/forgot" component={PasswordForgot} />
+        <PrivateRoute
+          exact
+          path="/password/update"
+          component={PasswordUpdate}
+        />
         <PrivateRoute exact path="/post/create" component={Post} />
         <PrivateRoute exact path="/profile" component={Profile} />
       </Switch>

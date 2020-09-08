@@ -1,6 +1,6 @@
 import React from "react";
 
-const PasswordReset = () => {
+const PasswordUpdate = () => {
   return (
     <div className="container p-5">
       <h1>test</h1> <h1>test</h1> <h1>test</h1> <h1>test</h1> <h1>test</h1>
@@ -9,4 +9,4 @@ const PasswordReset = () => {
   );
 };
 
-export default PasswordReset;
+export default PasswordUpdate;
