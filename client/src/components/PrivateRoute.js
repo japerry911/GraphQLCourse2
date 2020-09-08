@@ -5,7 +5,7 @@ import { AuthContext } from "../context/authContext";
 const PrivateRoute = ({ children, ...rest }) => {
   const { state } = useContext(AuthContext);
   const [user, setUser] = useState(false);
-  console.log("here");
+
   useEffect(() => {
     if (state.user) {
       setUser(true);
