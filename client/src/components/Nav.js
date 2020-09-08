@@ -51,11 +51,18 @@ const Nav = () => {
             </Fragment>
           )}
           {user && (
-            <li className="nav-item">
-              <a onClick={logout} href="/login" className="nav-item nav-link">
-                Logout
-              </a>
-            </li>
+            <Fragment>
+              <li className="nav-item active">
+                <Link className="nav-link" to="/profile">
+                  Profile
+                </Link>
+              </li>
+              <li className="nav-item">
+                <a onClick={logout} href="/login" className="nav-item nav-link">
+                  Logout
+                </a>
+              </li>
+            </Fragment>
           )}
         </ul>
         <form className="form-inline my-2 my-lg-0">
